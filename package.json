@@ -1,0 +1,17 @@
+{
+  "name": "trpc-monorepo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "npm run dev --workspace=server & npm run dev --workspace=client",
+    "start": "npm start --workspace=server & npm start --workspace=client"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "workspaces": [
+    "./packages/client",
+    "./packages/server"
+  ]
+}
