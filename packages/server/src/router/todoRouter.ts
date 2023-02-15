@@ -1,10 +1,9 @@
 import { z } from "zod";
 import trpc from "../lib/trpc";
-import prisma from "../lib/prismaClient";
 
 export const todoRouter = trpc.router({
-  list: trpc.procedure.query(async () => {
-    const todos = await prisma.todo.findMany();
+  list: trpc.procedure.query(async ({ ctx }) => {
+    const todos = await ctx.prisma.todo.findMany();
     return { todos };
   }),
   create: trpc.procedure
@@ -13,9 +12,9 @@ export const todoRouter = trpc.router({
         title: z.string(),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
       const title = input.title;
-      const newTodo = await prisma.todo.create({
+      const newTodo = await ctx.prisma.todo.create({
         data: {
           title,
           isCompleted: false,
@@ -31,8 +30,8 @@ export const todoRouter = trpc.router({
         isCompleted: z.boolean(),
       })
     )
-    .mutation(async ({ input }) => {
-      const todo = await prisma.todo.update({
+    .mutation(async ({ input, ctx }) => {
+      const todo = await ctx.prisma.todo.update({
         where: { id: input.id },
         data: { title: input.title, isCompleted: input.isCompleted },
       });
@@ -46,8 +45,8 @@ export const todoRouter = trpc.router({
         id: z.string(),
       })
     )
-    .mutation(async ({ input }) => {
-      const todo = await prisma.todo.delete({ where: { id: input.id } });
+    .mutation(async ({ input, ctx }) => {
+      const todo = await ctx.prisma.todo.delete({ where: { id: input.id } });
       return `Successfuly Deleted Todo ${todo.id}`;
     }),
 });
